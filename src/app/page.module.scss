@@ -5,6 +5,7 @@
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
+    background-color: white;
 
     .rollete_table {
         height: calc(100vh - 70vh);
@@ -71,19 +72,22 @@
         justify-content: space-between;
 
         .button {
-            padding: 10px 20px;
+            padding: 10px 30px;
             border-radius: 8px;
             background-color: white;
             cursor: pointer;
+            border: 1px solid;
+            color: black;
+
         }
     }
 
     .number_box {
-        height: 50px;
-        width: 50px;
+        height: 30px;
+        width: 30px;
         color: white;
         text-align: center;
-        padding: 13px;
+        padding: 4px;
         background-color: red;
         font-weight: 500;
         font-size: large;
