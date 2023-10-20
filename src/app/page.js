@@ -79,6 +79,7 @@ export default function Home() {
     if(position.row >= 10){
         setPosition({row:0, column:position.column + 1});
       }
+     
   
   }, [position])
 
@@ -86,8 +87,11 @@ export default function Home() {
     <main>
         <div className={styles.container}>
             <div className={styles.rollete_table}>
-              {numbers.map(i => {
-                return <div key={i} value={i} onClick={(e) => handleAddResult(e)} className={`${styles.number_box} ${i%2==0 ? styles.red : styles.black} ${i == 0 ? styles.green : ''}`}>{i}</div>
+              {Array.from({length:36}, (_, i) => {
+                  var index = i+1
+                 return <div key={index} value={index} onClick={(e) => handleAddResult(e)} className={`
+                    ${styles.number_box} ${[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(index) ? styles.red : styles.black}
+                    `}>{index}</div>
               })}
             </div>
 
