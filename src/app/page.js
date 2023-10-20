@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './page.module.scss'
 
 export default function Home() {
-  var numbers = Array.from({length:37}, (_,i) => i);
   var [history, setHistory] = useState([]);
   var [position, setPosition] = useState({row:0, column:0});
   var tableRef = useRef(null);
@@ -19,69 +18,64 @@ export default function Home() {
   var handleUndo = () => {
     setHistory((history) => {
         const previousItem = history[history.length - 1];
-        setPosition({row:previousItem.row, column: previousItem.col})
-        console.log(previousItem)
         tableRef.current.rows[previousItem.row].cells[previousItem.col].style.backgroundColor = "";
+        // var lastIndex = history.indexOf(previousItem)
+        // var item = history[lastIndex - 1]
+        // if(item.color === lastIndex.color){
+        //     setPosition({row: previousItem.row, column: previousItem.col});
+        // } else {
+        //    setPosition({row: previousItem.row, column: previousItem.col - 1});
+        // }
+        
+        setPosition({row: previousItem.row, column: previousItem.col});
         return history.slice(0, -1)
-    }) 
+    });
 }
-
+ 
   var handleAddResult = (e) => {
-    var value = e.target.innerText;
-    if(Number(value) === 0){
-        if(history.length === 0){
-          setHistory([{row:position.row,col:position.column, color: "green", number: Number(value) }]);
-          tableRef.current.rows[position.row].cells[position.column].style.backgroundColor = "green";
-          setPosition({row:position.row + 1, column:position.column});
+    var value = Number(e.target.innerText);
+    var blackNumbers = [2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35]
+  
+
+    if(history.length === 0){
+        if(blackNumbers.includes(value)){
+            setHistory([{row: position.row, col: position.column, color: 'black', number: value}]);
+            setPosition({row: position.row + 1, column: position.column})
         } else {
-            setHistory([...history,{row:position.row,col:position.column, color: "green", number: Number(value) }]);
-            tableRef.current.rows[position.row].cells[position.column].style.backgroundColor = "green";
-            setPosition({row:position.row + 1, column:position.column});
+            setHistory([{row: position.row, col: position.column, color: 'red', number: value}]);
+            setPosition({row: position.row + 1, column: position.column})
         }
-    } else {
-
-            if(Number(value) % 2 === 0){
-              // Even
-                  if(history.length === 0){
-                    setHistory([{row:position.row,col:position.column, color: "red", number: Number(value) }]);
-                    tableRef.current.rows[position.row].cells[position.column].style.backgroundColor = "red";
-                    setPosition({row:position.row + 1, column:position.column});
-                  } else if(history[history.length - 1].color === "black" || history[history.length - 1].color === "green"){
-                    setHistory([...history,{row:0,col:position.column + 1, color: "red", number: Number(value) }]);
-                    tableRef.current.rows[0].cells[position.column + 1].style.backgroundColor = "red";
-                    setPosition({row:1, column:position.column + 1});
-                  } else {
-                    setHistory([...history,{row:position.row,col:position.column, color: "red", number: Number(value) }]);
-                    tableRef.current.rows[position.row].cells[position.column].style.backgroundColor = "red";
-                    setPosition({row:position.row + 1, column:position.column});
-                  }
-
-            } else {
-              // Odd 
-                  if(history.length === 0){
-                    setHistory([{row:position.row,col:position.column, color: "black", number: Number(value) }]);
-                    tableRef.current.rows[position.row].cells[position.column].style.backgroundColor = "black";
-                    setPosition({row:position.row + 1, column:position.column});
-                  } else if(history[history.length - 1].color === "red" || history[history.   length - 1].color === "green"){
-                    setHistory([...history,{row:0,col:position.column + 1, color: "black", number: Number(value) }]);
-                    tableRef.current.rows[0].cells[position.column + 1].style.backgroundColor = "black";
-                    setPosition({row:1, column:position.column + 1});
-                  } else {
-                    setHistory([...history,{row:position.row,col:position.column, color: "black", number: Number(value) }]);
-                    tableRef.current.rows[position.row].cells[position.column].style.backgroundColor = "black";
-                    setPosition({row:position.row + 1, column:position.column});
-                  }
-              }
+    }  else {
+        var prevHist = history[history.length - 1]
+        if(blackNumbers.includes(value)){
+          if(prevHist.color === 'black'){
+            setHistory([...history, {row:position.row, col: position.column, color: 'black'}])
+            setPosition({row: position.row + 1, column: position.column})
+          } else {
+            setHistory([...history, {row:0, col: position.column + 1, color: 'black'}])
+            setPosition({row: 1, column: position.column + 1})
+          }
+        } else {
+          if(prevHist.color === 'red'){
+            setHistory([...history, {row:position.row, col: position.column, color: 'red'}])
+            setPosition({row: position.row + 1, column: position.column})
+          } else {
+            setHistory([...history, {row:0, col: position.column + 1, color: 'red'}])
+            setPosition({row: 1, column: position.column + 1})
+          }
+        }
     }
   }
 
   useEffect(() => {
-    if(position.row >= 10){
+    if(position.row > 9){
         setPosition({row:0, column:position.column + 1});
       }
-     
-  
-  }, [position])
+      history.map(res => {
+        tableRef.current.rows[res.row].cells[res.col].style.backgroundColor = res.color;
+      })
+      console.log(history)
+  }, [position, history])
 
   return (
     <main>
